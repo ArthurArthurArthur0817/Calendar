@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>月曆</title>
+    <style>
+        /* 將月曆置中 */
+        .calendar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+        /* 右下角的新增事項按鈕 */
+        .add-task-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>選擇月份</h1>
+    <form method="post">
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" value="{{ year }}" placeholder="Year">
+        
+        <label for="month">Month:</label>
+        <input type="number" id="month" name="month" value="{{ month }}" placeholder="Month" min="1" max="12">
+        
+        <button type="submit">查看月曆</button>
+    </form>
+
+    <div class="calendar-container">
+        <div>{{ calendar|safe }}</div>
+    </div>
+
+    <!-- 新增事項按鈕 -->
+    <a href="{{ url_for('add_task') }}" class="add-task-button">新增事項</a>
+</body>
+</html>
