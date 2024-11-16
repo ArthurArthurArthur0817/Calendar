@@ -1,53 +1,49 @@
 from flask import Flask, render_template, request, redirect, url_for
-import calendar
-from datetime import datetime
-import openpyxl
+import pandas as pd
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
-def calendar_view():
-    year = datetime.now().year
-    month = datetime.now().month
+# 初始化 task.xlsx
+TASK_FILE = "task.xlsx"
+try:
+    df = pd.read_excel(TASK_FILE)
+except FileNotFoundError:
+    df = pd.DataFrame(columns=["Date", "Task", "Location", "Priority", "Subtask 1", "Subtask 2", "Subtask 3"])
+    df.to_excel(TASK_FILE, index=False)
 
-    if request.method == 'POST':
-        year = int(request.form.get('year', year))
-        month = int(request.form.get('month', month))
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-    cal = calendar.HTMLCalendar().formatmonth(year, month)
-    return render_template('calendar.html', calendar=cal, year=year, month=month)
+@app.route("/task", methods=["GET", "POST"])
+def task():
+    if request.method == "POST":
+        date = request.form["date"]
+        task = request.form["task"]
+        location = request.form["location"]
+        priority = request.form["priorty"]
+        detail_1 = request.form["detail_1"]
+        detail_2 = request.form["detail_2"]
+        detail_3 = request.form["detail_3"]
 
-@app.route('/add_task', methods=['GET', 'POST'])
-def add_task():
-    if request.method == 'POST':
-        date = request.form['date']
-        task = request.form['task']
-        location = request.form['location']
-        priorty = request.form['priorty']
-        detail_1 = request.form.get('detail_1', '')
-        detail_2 = request.form.get('detail_2', '')
-        detail_3 = request.form.get('detail_3', '')
+        # 新增事件到 DataFrame
+        new_event = pd.DataFrame([{
+            "Date": date,
+            "Task": task,
+            "Location": location,
+            "Priority": priority,
+            "Subtask 1": detail_1,
+            "Subtask 2": detail_2,
+            "Subtask 3": detail_3,
+        }])
 
-        # 儲存資料到 tasks.xlsx
-        save_to_excel(date, task, location, priorty, detail_1, detail_2, detail_3)
+        # 使用 pd.concat 合併新事件
+        df = pd.read_excel(TASK_FILE)
+        updated_df = pd.concat([df, new_event], ignore_index=True)
+        updated_df.to_excel(TASK_FILE, index=False)
 
-        return redirect(url_for('calendar_view'))
+        return redirect(url_for("index"))
+    return render_template("task.html")
 
-    return render_template('date.html')
-
-def save_to_excel(date, task, location, priorty, detail_1, detail_2, detail_3):
-    try:
-        workbook = openpyxl.load_workbook('task.xlsx')
-    except FileNotFoundError:
-        workbook = openpyxl.Workbook()
-        sheet = workbook.active
-        sheet.append(["Date", "Task", "Location","priorty", "detail_1", "detail_2", "detail_3"])  # 標題行
-    else:
-        sheet = workbook.active
-
-    # 新增一行資料
-    sheet.append([date, task, location,priorty, detail_1, detail_2, detail_3])
-    workbook.save('task.xlsx')
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
