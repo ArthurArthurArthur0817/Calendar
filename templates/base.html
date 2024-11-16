@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}日曆應用{% endblock %}</title>
+    <style>
+        .container {
+            display: flex;
+        }
+        .calendar {
+            width: 60%;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+        }
+        .tasks {
+            width: 40%;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calendar">
+            <h1>大日曆</h1>
+            <!-- 日曆內容 -->
+            {{ calendar | safe }}
+        </div>
+        <div class="tasks">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>
