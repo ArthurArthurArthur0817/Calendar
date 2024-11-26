@@ -43,14 +43,17 @@
                 }
                 const cell = row.insertCell();
                 cell.textContent = day;
-                cell.onclick = () => selectDate(day);
+
+
+                //點擊日期跳轉到第三頁
+                cell.onclick = () => selectDateAndRedirect(day);
             }
             monthYear.textContent = `${firstDay.toLocaleString("default", {
                 month: "long",
             })} ${currentYear}`;
         }
 
-        function selectDate(day) {
+        function selectDateAndRedirect(day) {
             // 創建日期物件
             const selected = new Date(currentYear, currentMonth, day);
         
@@ -64,7 +67,13 @@
         
             // 更新顯示的日期
             selectedDate.textContent = `選擇的日期: ${formattedDate}`;
+       
+            // 跳轉到第三頁，包含選擇的日期作為查詢參數
+            window.location.href = `/tasks_on_date?date=${formattedDate}`;
+        
+       
         }
+        
         
         
 
