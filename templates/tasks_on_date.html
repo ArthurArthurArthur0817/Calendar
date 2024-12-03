@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <div class="top-section">
+        <h1>Calendar</h1>
+    </div>
+
     <div class="container">
 
         <!-- 左側：日曆區域 -->
@@ -39,7 +43,7 @@
                         <li>
                             <a href="{{ url_for('task_details', task_id=task['ID']) }}">{{ task['Task'] }}</a>
                             <div class="progress-container">
-                                <div class="progress-bar" style="width: 50%">
+                                <div class="progress-bar" style="width: {{ task['progress'] }}%">
                                     <span class="progress-text">{{ task['progress'] }}%</span>
                                 </div>
                             </div>
@@ -50,7 +54,7 @@
                 <p>該日期沒有任務。</p>
             {% endif %}
             <a href="/">返回首頁</a>
-        </div>
+        </div>        
     </div>
 
     <!-- 引入月曆腳本 -->
