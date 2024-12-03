@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <div class="top-section">
+        <h1>Calendar</h1>
+    </div>
+
     <div class="container">
         <div class="calendar">
             <div class="calendar-header">
@@ -21,6 +25,40 @@
             <a href="/task"><button id="add-event-button">新增事件</button></a>
         </div>
     </div>
+
+     <!-- 下方白色區域 -->
+     <div class="bottom-section">
+        <!-- 用來顯示隨機句子的區域 -->
+        <p id="bottom-message">這是下方的白色區域，可以顯示額外訊息。</p>
+        <!-- 刷新句子的按鈕 -->
+        <button class="refresh-button" onclick="displayRandomQuote()">刷新句子</button>
+    </div>
+
+    <script>
+        // 定義句子的列表
+        const quotes = [
+            "成功是由無數小努力積累而成。",
+            "行動是通往成功的唯一途徑。",
+            "今天的努力會讓未來更加美好。",
+            "每一天都是新的開始。",
+            "堅持夢想，你終將抵達彼岸。",
+            "學習是人生中最重要的投資。",
+            "勇於挑戰，才能不斷成長。",
+            "每個失敗都是通向成功的階梯。",
+            "微笑面對生活的每一天。"
+        ];
+
+        // 隨機選擇一句，並顯示在 bottom-message 區域
+        function displayRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const randomQuote = quotes[randomIndex];
+            document.getElementById("bottom-message").textContent = randomQuote;
+        }
+
+        // 頁面加載時執行一次
+        displayRandomQuote();
+    </script>
+
     <script>
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
