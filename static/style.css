@@ -135,7 +135,7 @@ button:hover {
 
 .complete-button {
     padding: 10px 20px;
-    background-color: #4CAF50; /* 綠色 */
+    background-color: #297ce1; /* 藍色 */
     color: white;
     border: none;
     border-radius: 5px;
@@ -144,7 +144,7 @@ button:hover {
 }
 
 .complete-button:hover {
-    background-color: #45a049; /* 深綠 */
+    background-color: #2c0ed2; /* 深藍 */
 }
 
 /* 隱藏表單的樣式 */
@@ -170,13 +170,14 @@ button:hover {
 }
 
 .progress-bar {
-    background-color: #2260a7;
+    background: linear-gradient(to right, #2260a7, #58a1e8);
     height: 100%;
     border-radius: 5px;
     text-align: center;
     color: white;
     line-height: 20px;
 }
+
 
 .progress-text {
     position: absolute;
