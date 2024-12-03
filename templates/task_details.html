@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <div class="top-section">
+        <h1>Calendar</h1>
+    </div>
+    
     <div class="container">
         <!-- 左側：日曆區域 -->
         <div class="calendar">
@@ -33,13 +37,32 @@
             <h2>任務: {{ task_name }}</h2>
             <h3>子任務</h3>
             <ul>
-                <li>{{ subtask_1 }}</li>
-                <li>{{ subtask_2 }}</li>
-                <li>{{ subtask_3 }}</li>
+                {% for subtask in subtasks %}
+                    <li>
+                        {{ subtask['name'] }}
+                        {% if not subtask['completed'] %}
+                            <button class="complete-button" onclick="markAsComplete('{{ subtask['id'] }}')">完成</button>
+                        {% else %}
+                            <span> </span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
             </ul>
             <a href="{{ url_for('tasks_on_date', date=selected_date, _external=True) }}">返回任務列表</a>
-           
         </div>
+        
+        <script>
+            function markAsComplete(subtaskId) {
+                fetch(`/complete_subtask/${subtaskId}`, { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload(); // 任務完成後重新載入頁面
+                        } else {
+                            alert("更新失敗！");
+                        }
+                    });
+            }
+        </script>               
     </div>
 
     <!-- 引入月曆腳本 -->
