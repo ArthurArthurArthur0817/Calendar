@@ -71,19 +71,38 @@ def task():
 def tasks_on_date():
     selected_date = request.args.get("date", "")  # 獲取 URL 中的日期參數
     
-    
     tasks_for_date = []
     if selected_date:
         df = pd.read_excel(TASK_FILE)  # 讀取最新的任務文件
         
         # 確保日期欄位格式一致
         df["Date"] = pd.to_datetime(df["Date"]).dt.strftime("%Y-%m-%d")
-        
-        tasks_for_date = df[df["Date"] == selected_date][["ID", "Task"]].to_dict(orient="records")
+        tasks_for_date = df[df["Date"] == selected_date].copy()
+
+        # 計算進度百分比
+        def calculate_progress(row):
+            subtasks = [row.get("Subtask 1"), row.get("Subtask 2"), row.get("Subtask 3")]
+            total = sum(1 for task in subtasks if pd.notna(task))
+            completed = sum(1 for task in subtasks if pd.notna(task) and task.endswith("(完成)"))
+            return int((completed / total) * 100) if total > 0 else 0
+
+        tasks_for_date["progress"] = tasks_for_date.apply(calculate_progress, axis=1)
+        tasks_for_date = tasks_for_date[["ID", "Task", "progress"]].to_dict(orient="records")
 
     return render_template("tasks_on_date.html", tasks=tasks_for_date, selected_date=selected_date)
+
     
 
+@app.route("/complete_subtask/<subtask_id>", methods=["POST"])
+def complete_subtask(subtask_id):
+    df = pd.read_excel(TASK_FILE)
+    for idx, row in df.iterrows():
+        for subtask_col in ["Subtask 1", "Subtask 2", "Subtask 3"]:
+            if row[subtask_col] == subtask_id:
+                df.at[idx, subtask_col] += " (完成)"
+                df.to_excel(TASK_FILE, index=False)
+                return "OK", 200
+    return "Subtask not found", 404
 
 
     
@@ -92,39 +111,31 @@ def tasks_on_date():
 @app.route("/task_details")
 def task_details():
     task_id = request.args.get('task_id', '')
-    
+
     try:
         # 讀取任務文件
-        tasks = pd.read_excel("task.xlsx")
-        
-        task = tasks[tasks['ID'] == task_id] 
+        df = pd.read_excel(TASK_FILE)
+        task = df[df['ID'] == task_id]
 
         if task.empty:
             return f"Task '{task_id}' not found", 404
 
         task_name = task["Task"].iloc[0]
         subtasks = [
-            task["Subtask 1"].iloc[0],
-            task["Subtask 2"].iloc[0],
-            task["Subtask 3"].iloc[0],
+            {"id": task["Subtask 1"].iloc[0], "name": task["Subtask 1"].iloc[0], "completed": "(完成)" in task["Subtask 1"].iloc[0]},
+            {"id": task["Subtask 2"].iloc[0], "name": task["Subtask 2"].iloc[0], "completed": "(完成)" in task["Subtask 2"].iloc[0]},
+            {"id": task["Subtask 3"].iloc[0], "name": task["Subtask 3"].iloc[0], "completed": "(完成)" in task["Subtask 3"].iloc[0]},
         ]
-        selected_date = task['Date'].iloc[0]  # 假設這是日期字段
-        
-        # 顯示生成的 URL 以供檢查
-        return_url = url_for('tasks_on_date', date=selected_date)
-        print(f"Generated URL: {return_url}")  # 這會在後端控制台輸出 URL
+        selected_date = task['Date'].iloc[0]
         
     except Exception as e:
-        return f"An error occurred while processing the task details: {e}", 500
+        return f"An error occurred: {e}", 500
 
-    # 渲染模板
     return render_template(
         'task_details.html',
         task_name=task_name,
-        subtask_1=subtasks[0],
-        subtask_2=subtasks[1],
-        subtask_3=subtasks[2],
-        selected_date=selected_date  # 確保日期參數傳遞到模板
+        subtasks=subtasks,
+        selected_date=selected_date
     )
 
 
