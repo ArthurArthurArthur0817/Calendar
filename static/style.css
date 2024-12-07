@@ -227,3 +227,73 @@ button:hover {
 .refresh-button:hover {
     background-color: #0056b3;
 }
+
+
+/* 任務優先級指示器 */
+.priority-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.priority-3 {
+    background-color: #ff4d4d;  /* 重要 - 紅色 */
+}
+
+.priority-2 {
+    background-color: #ffd700;  /* 次要 - 黃色 */
+}
+
+.priority-1 {
+    background-color: #90EE90;  /* 普通 - 綠色 */
+}
+
+/* 任務項目樣式 */
+.task-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+}
+
+.task-content {
+    flex-grow: 1;
+}
+
+/* 優先級區塊樣式 */
+.priority-section {
+    margin-bottom: 20px;
+}
+
+.priority-heading {
+    margin: 15px 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #eee;
+}
+
+/* 進度條樣式 */
+.progress-container {
+    margin-top: 5px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: #4CAF50;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.progress-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white;
+    line-height: 20px;
+}
