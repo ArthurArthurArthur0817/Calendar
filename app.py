@@ -43,7 +43,7 @@ def task():
             "Date": date,
             "Task": task,
             "Location": location,
-            "Priority": priority,
+            "Priority": int(priority),
             "Subtask 1": str(detail_1),
             "Subtask 2": str(detail_2),
             "Subtask 3": str(detail_3),
@@ -87,8 +87,9 @@ def tasks_on_date():
             return int((completed / total) * 100) if total > 0 else 0
 
         tasks_for_date["progress"] = tasks_for_date.apply(calculate_progress, axis=1)
-        tasks_for_date = tasks_for_date[["ID", "Task", "progress"]].to_dict(orient="records")
-
+        tasks_for_date = tasks_for_date[["ID", "Task", "Priority", "progress"]].to_dict(orient="records")
+        tasks_for_date = sorted(tasks_for_date, key=lambda x: x["Priority"], reverse=True)
+        
     return render_template("tasks_on_date.html", tasks=tasks_for_date, selected_date=selected_date)
 
     
@@ -127,6 +128,17 @@ def task_details():
             {"id": task["Subtask 3"].iloc[0], "name": task["Subtask 3"].iloc[0], "completed": "(完成)" in task["Subtask 3"].iloc[0]},
         ]
         selected_date = task['Date'].iloc[0]
+        location = task['Location'].iloc[0]
+
+        # 新增天氣預報功能
+        from weather import get_weather_forecast
+        api_key = "CWA-78325D64-8216-4195-BA5A-03325ECBF818"  # 建議將 API Key 移至環境變數
+        target_time = selected_date + " 06:00:00"
+        
+        try:
+            weather_data = get_weather_forecast(location, target_time, api_key)
+        except Exception as weather_error:
+            weather_data = {"error": str(weather_error)}
         
     except Exception as e:
         return f"An error occurred: {e}", 500
@@ -135,7 +147,9 @@ def task_details():
         'task_details.html',
         task_name=task_name,
         subtasks=subtasks,
-        selected_date=selected_date
+        selected_date=selected_date,
+        location=location,
+        weather_data=weather_data
     )
 
 
