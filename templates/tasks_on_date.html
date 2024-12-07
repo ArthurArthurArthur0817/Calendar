@@ -38,18 +38,30 @@
             <h2>日期: {{ selected_date }}</h2>
             <h3>任務列表</h3>
             {% if tasks %}
-                <ul>
-                    {% for task in tasks %}
-                        <li>
-                            <a href="{{ url_for('task_details', task_id=task['ID']) }}">{{ task['Task'] }}</a>
-                            <div class="progress-container">
-                                <div class="progress-bar" style="width: {{ task['progress'] }}%">
-                                    <span class="progress-text">{{ task['progress'] }}%</span>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+                {% set priority_names = {3: '重要任務', 2: '次要任務', 1: '普通任務'} %}
+                {% for priority in [3, 2, 1] %}
+                    {% set priority_tasks = tasks|selectattr('Priority', 'eq', priority)|list %}
+                    {% if priority_tasks %}
+                        <div class="priority-section">
+                            <h4 class="priority-heading">{{ priority_names[priority] }}</h4>
+                            <ul>
+                                {% for task in priority_tasks %}
+                                    <li class="task-item">
+                                        <span class="priority-indicator priority-{{ priority }}"></span>
+                                        <div class="task-content">
+                                            <a href="{{ url_for('task_details', task_id=task['ID']) }}">{{ task['Task'] }}</a>
+                                            <div class="progress-container">
+                                                <div class="progress-bar" style="width: {{ task['progress'] }}%">
+                                                    <span class="progress-text">{{ task['progress'] }}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             {% else %}
                 <p>該日期沒有任務。</p>
             {% endif %}
@@ -95,8 +107,6 @@
             const date = String(selected.getDate()).padStart(2, "0");
             const formattedDate = `${year}-${month}-${date}`;
             console.log(`/tasks_on_date?date=${formattedDate}`);
-
-            
             // 更新網址
             window.location.href = `/tasks_on_date?date=${formattedDate}`;
         };

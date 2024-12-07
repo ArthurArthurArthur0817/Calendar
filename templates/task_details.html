@@ -47,7 +47,22 @@
                         {% endif %}
                     </li>
                 {% endfor %}
-            </ul>
+            </ul><hr>
+
+           <!-- 新增天氣預報區域 -->
+           <h3>天氣預報：{{ location }}</h3>
+           <div class="weather-forecast">
+               {% if weather_data and not weather_data.get('error') %}
+                   <ul>
+                       <li>溫度：{{ weather_data['最低溫度 (MinT)'] }}~{{ weather_data['最高溫度 (MaxT)'] }}°C</li>
+                       <li>天氣現象：{{ weather_data['天氣現象 (Wx)'] }}</li>
+                       <li>12小時降雨機率：{{ weather_data['12小時降雨機率 (PoP12h)'] }}%</li>
+                   </ul>
+               {% else %}
+                   <p>無法取得天氣預報：{{ weather_data.get('error', '未知錯誤') }}</p>
+               {% endif %}
+           </div>
+
             <a href="{{ url_for('tasks_on_date', date=selected_date, _external=True) }}">返回任務列表</a>
         </div>
         
