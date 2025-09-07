@@ -1,6 +1,22 @@
-# Calendar
+# 📅 智慧行事曆應用 (Calendar + To-do + Weather Notification)
 
-影片連結(https://youtu.be/P6KZMJltXSI?si=IUyt8VO2YJZiFF__)
+🎥 **Demo 影片**  
+[![Demo Video](https://img.youtube.com/vi/P6KZMJltXSI/0.jpg)](https://youtu.be/P6KZMJltXSI?si=IUyt8VO2YJZiFF__)
+
+這是一個以 **Python + Flask** 打造的應用，整合了 **月曆、待辦事項提醒與紀錄、天氣通知** 等功能。
+
+## ✨ 特色功能
+1. **事件排序與進度顯示**  
+   - 可依據不同事件的重要程度進行排序  
+   - 若事件包含多個階段，會根據完成度顯示整體進度  
+
+2. **天氣資訊提醒**  
+   - 當事件設定了特定地區，可顯示該地區的 **天氣、濕度、溫度**  
+
+3. **每日鼓勵小語**  
+   - 系統會每日自動生成一句勵志小語  
+   - 讓使用者在規劃行程時更有動力 💪
+
  ```
 Calendar/
 │
